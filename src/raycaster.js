@@ -10,14 +10,14 @@ module.exports = {
     gl.uniform2fv(gl.getUniformLocation(this.program, "screenSize"), [gl.drawingBufferWidth, gl.drawingBufferHeight]);
     this.vertexPositionAttribute = gl.getAttribLocation(this.program, "vertexPosition");
   },
-  render: function(){
+  render: function(position){
     let gl = Renderer.gl;
     gl.useProgram(this.program);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers);
     gl.vertexAttribPointer(this.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
 
-    //let positionUniformLocation = gl.getUniformLocation(this.program, "position");
-    //gl.uniform2fv(positionUniformLocation, position);
+    let positionUniformLocation = gl.getUniformLocation(this.program, "blockPosition");
+    gl.uniform3fv(positionUniformLocation, position);
 
     //gl.uniform2fv(
     //    gl.getUniformLocation(Tile.program, "blockAspects"),
