@@ -25,6 +25,10 @@ module.exports = {
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
     gl.uniform1i(gl.getUniformLocation(this.program, "testTexture"), 0);
 
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, this.worldDataTexture);
+    gl.uniform1i(gl.getUniformLocation(this.program, "worldDataTexture"), 1);
+
     //gl.uniform2fv(
     //    gl.getUniformLocation(Tile.program, "blockAspects"),
     //    blockAspects);

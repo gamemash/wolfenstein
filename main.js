@@ -27,12 +27,43 @@ let radius = 5;
 let position = [0, 0, 5];
 let angle = 0;
 
-let width = height = 10;
+let width = height = 32;
 let world = [].concat.apply([], (new Array(height)).fill().map(function(_,y){
   return (new Array(width)).fill().map(function(_, x){
     return {x: x, y: y, filled: false}
   });
 }));
+
+
+world[1].filled = true;
+world[2].filled = true;
+
+let worldData = new Uint8Array(width * height * 4);
+let i = 0;
+world.forEach(function(tile){
+  worldData[i]     = tile.x;
+  worldData[i + 1] = tile.y;
+  worldData[i + 2] = tile.filled;
+  worldData[i + 3] = 0;
+  i += 4;
+});
+
+
+{
+  let gl = Renderer.gl;
+  let texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, worldData);
+  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST ) ;
+  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST ) ;
+  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT ) ;
+  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT ) ;
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+  Raycaster.worldDataTexture = texture;
+}
+
 
 world[5 + width].filled = true;
 
@@ -84,9 +115,9 @@ let fovVector = vector(lookDirection.y, -lookDirection.x);
 //});
 
 function render(){
-  let distance = Raycaster.findDistance(vector(5.5, 0), normalize(vector(0.1, 0.9)), world);
-  console.log(distance);
-  return;
+  //let distance = Raycaster.findDistance(vector(5.5, 0), normalize(vector(0.1, 0.9)), world);
+  //console.log(distance);
+  //return;
   Renderer.clear();
 
   position[0] = Math.cos(angle) * radius;
@@ -95,6 +126,9 @@ function render(){
   Raycaster.render(position);
   angle += 0.01;
 
+
+  requestAnimationFrame(render);
+  return;
   if (once){
     let gl = Renderer.gl;
     let size = 4 * 10 * 10;
@@ -108,7 +142,5 @@ function render(){
     once = false;
   }
 
-
-  requestAnimationFrame(render);
 }
 
