@@ -5,7 +5,6 @@ let keys = {};
 function handleKeyDown(event){
   if(event.repeat) return;
   keys[event.keyCode] = true;
-  console.log(event.keyCode);
 }
 function handleKeyUp(event){
   delete keys[event.keyCode];

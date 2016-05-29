@@ -118,7 +118,6 @@ function render(){
     for (let i = 0; i < size; i += 1){
      corrected[i] = pixelValues[i] / 255;
     }
-    console.log(corrected);
     once = false;
   }
 
