@@ -33,20 +33,27 @@ void main(){
 
     vec4 tileData = texture2D(worldDataTexture, vec2(tilePosition.xz) / 32.0);
     if (tileData.z > 0.9/256.0){
-      vec2 relativeToWallCoordinate = position.xy - floor(position.xy);
+      vec3 relativeToWallCoordinate = position.xyz - floor(position.xyz);
       relativeToWallCoordinate.y = 1.0 - relativeToWallCoordinate.y;
-      //gl_FragColor = vec4(relativeToWallCoordinate, 0, 1);
-      gl_FragColor = texture2D(testTexture, relativeToWallCoordinate);
+      //gl_FragColor = vec4(relativeToWallCoordinate.xy, 0, 1);
+      gl_FragColor = texture2D(testTexture, relativeToWallCoordinate.xy);
       return;
     }
     float addedDistance = 0.0;
+    vec3 step_dir = vec3(1);
+    if (ray.x < 0.0)
+      step_dir.x = 0.0;
+
+    if (ray.z < 0.0)
+      step_dir.z = 0.0;
+
     if (ray.x == 0.0){
-      addedDistance = (1.0 - mod(position.z,1.0)) / ray.z;
+      addedDistance = abs((step_dir.z - mod(position.z,1.0)) / ray.z);
     } else if (ray.y == 0.0){
-      addedDistance = (1.0 - mod(position.x,1.0)) / ray.x;
+      addedDistance = abs((step_dir.x - mod(position.x,1.0)) / ray.x);
     } else {
-      float d_x = (1.0 - mod(position.x,1.0)) / ray.x;
-      float d_z = (1.0 - mod(position.z,1.0)) / ray.z;
+      float d_x = (step_dir.x - mod(position.x,1.0)) / ray.x;
+      float d_z = (step_dir.z - mod(position.z,1.0)) / ray.z;
       addedDistance = min(abs(d_x), abs(d_z));
     }
     position += ray * (addedDistance + 0.00001);

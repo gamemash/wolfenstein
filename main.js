@@ -4,6 +4,7 @@ let TextureLoader = require('./src/texture_loader.js');
 let Raycaster = require('./src/raycaster.js');
 let KeyInput = require('./src/key_input.js');
 
+let levelData = require('./src/level_data.js');
 
 let canvas = document.getElementById('game-canvas');
 let aspects = [512, 384];
@@ -27,9 +28,9 @@ let once = true;
 let radius = 5;
 
 let width = height = 32;
-let world = [].concat.apply([], (new Array(height)).fill().map(function(_,y){
-  return (new Array(width)).fill().map(function(_, x){
-    return {x: x, y: y, filled: false}
+let world = [].concat.apply([],levelData.map(function(row,y){
+  return row.map(function(f, x){
+    return {x: x, y: y, filled: f}
   });
 }));
 
@@ -68,7 +69,7 @@ world.forEach(function(tile){
   Raycaster.worldDataTexture = texture;
 }
 
-let position = [16, 12];
+let position = [3, 3];
 let angle = 0;
 let speed = 2;
 let rotationalSpeed = 1;
