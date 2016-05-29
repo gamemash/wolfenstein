@@ -12,7 +12,7 @@ module.exports = {
     this.texture = TextureLoader.get("7.GIF");
     this.vertexPositionAttribute = gl.getAttribLocation(this.program, "vertexPosition");
   },
-  render: function(position){
+  render: function(position, lookVector){
     let gl = Renderer.gl;
     gl.useProgram(this.program);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers);
@@ -20,6 +20,7 @@ module.exports = {
 
     let positionUniformLocation = gl.getUniformLocation(this.program, "playerPosition");
     gl.uniform2fv(positionUniformLocation, position);
+    gl.uniform2fv(gl.getUniformLocation(this.program, "lookVector"), lookVector);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.texture);

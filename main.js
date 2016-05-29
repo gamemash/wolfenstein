@@ -25,8 +25,6 @@ Promise.all(stuffToLoad).then(function(){
 let once = true;
 
 let radius = 5;
-let position = [16, 12];
-let angle = 0;
 
 let width = height = 32;
 let world = [].concat.apply([], (new Array(height)).fill().map(function(_,y){
@@ -70,30 +68,43 @@ world.forEach(function(tile){
   Raycaster.worldDataTexture = texture;
 }
 
+let position = [16, 12];
+let angle = 0;
 let speed = 2;
+let rotationalSpeed = 1;
 let dt = 1/60;
 function render(){
+  if (KeyInput[81]){
+    angle += rotationalSpeed * Math.PI * 2 * dt;
+  }
+  if (KeyInput[69]){
+    angle -= rotationalSpeed * Math.PI * 2 * dt;
+  }
+  let lookVector = [Math.cos(angle), Math.sin(angle)];
+
   if (KeyInput[87]){
-    position[1] += speed * dt;
+    position[0] += lookVector[0] * speed * dt;
+    position[1] += lookVector[1] * speed * dt;
   }
 
   if (KeyInput[83]){
-    position[1] -= speed * dt;
+    position[0] -= lookVector[0] * speed * dt;
+    position[1] -= lookVector[1] * speed * dt;
   }
 
   if (KeyInput[65]){
-    position[0] -= speed * dt;
+    position[0] -= lookVector[1] * speed * dt;
+    position[1] += lookVector[0] * speed * dt;
   }
 
   if (KeyInput[68]){
-    position[0] += speed * dt;
+    position[0] += lookVector[1] * speed * dt;
+    position[1] -= lookVector[0] * speed * dt;
   }
-
 
   Renderer.clear();
 
-  Raycaster.render(position);
-  angle += 0.01;
+  Raycaster.render(position, lookVector);
 
 
   requestAnimationFrame(render);
