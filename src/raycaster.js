@@ -18,8 +18,8 @@ module.exports = {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers);
     gl.vertexAttribPointer(this.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
 
-    let positionUniformLocation = gl.getUniformLocation(this.program, "blockPosition");
-    gl.uniform3fv(positionUniformLocation, position);
+    let positionUniformLocation = gl.getUniformLocation(this.program, "playerPosition");
+    gl.uniform2fv(positionUniformLocation, position);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
