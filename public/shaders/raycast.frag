@@ -17,14 +17,13 @@ bool inBlock(vec3 pointOfIntersection, vec3 blockPosition, float blockSize){
 
 void main(){
   vec3 lookDirection = normalize(vec3(0, 0, 1));
-  vec3 origin = vec3(2, 0, -2);
+  vec3 origin = vec3(1.5, 0, 0);
 
   vec3 fovVector = cross(lookDirection, vec3(0, -1, 0));
-  vec3 fovOffset = fovVector * vec3(relativeCoordinate.x, relativeCoordinate.y, 0);
-  fovOffset.y += relativeCoordinate.y;
+  vec3 fovOffset = fovVector * vec3(relativeCoordinate.x / 2.0, 0, 0);
+  fovOffset.y += screenCoordinate.y;
   vec3 ray = normalize(lookDirection + fovOffset);
   vec3 position = origin + fovOffset;
-  position += ray * 2.1;
 
 
   if ( position.x < 0.0)
