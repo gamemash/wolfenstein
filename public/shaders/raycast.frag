@@ -19,7 +19,9 @@ void main(){
   vec3 position = origin;
 
 
+  //walk through level
   for (int i = 0; i < 32; i++){
+    //if ray position is outside level display nothing.
     if ( position.x < 0.0 || position.x > 32.0 || position.z < 0.0 || position.z > 32.0){
       gl_FragColor = vec4(0.0, 0.0, 0.0, 1);
     }
@@ -32,21 +34,22 @@ void main(){
       return; // floor
     }
 
+    //floor the position to get the tile
     ivec3 tilePosition = ivec3(position);
 
+    //get the current tile data, if the tile is filled get the coordinates projected on the wall to put the texture up and stop this fragment shader
     vec4 tileData = texture2D(worldDataTexture, vec2(tilePosition.xz) / 32.0);
     if (tileData.z > 0.9/256.0){
       vec3 relativeToWallCoordinate = position.xyz - floor(position.xyz);
       relativeToWallCoordinate.y = 1.0 - relativeToWallCoordinate.y;
       relativeToWallCoordinate.x = abs((relativeToWallCoordinate.x + relativeToWallCoordinate.z) - 1.0);
-      //gl_FragColor = vec4(relativeToWallCoordinate.xy, 0, 1);
       vec2 tileCoordinate = floor(vec2(mod(tileData.w * 256.0, 6.0), tileData.w * 256.0 / 6.0));
       vec2 textureCoords = (abs(relativeToWallCoordinate.xy) + tileCoordinate) / vec2(6,19);
       gl_FragColor = texture2D(testTexture, textureCoords);
-      //gl_FragColor = texture2D(testTexture, (relativeToWallCoordinate.xy + vec2(2, 1)) / vec2(6, 19));
-      //gl_FragColor = vec4((tileCoordinate.xy * 256.0 / vec2(6, 19)).yy, 0, 1);
       return;
     }
+
+    //if the current tile isnt filled find the distance to the next tile
     float addedDistance = 0.0;
     vec3 step_dir = vec3(1);
     if (ray.x < 0.0)
@@ -64,7 +67,9 @@ void main(){
       float d_z = (step_dir.z - mod(position.z,1.0)) / ray.z;
       addedDistance = min(abs(d_x), abs(d_z));
     }
+    //move the ray position the added distance to the next tile (and a bit more for rounding errors)
     position += ray * (addedDistance + 0.00001);
   }
+  //went all the way but didnt find anything? return black background.
   gl_FragColor = vec4(0, 0, 0, 1);
 }
