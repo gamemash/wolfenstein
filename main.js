@@ -13,7 +13,7 @@ Renderer.setup(canvas, aspects);
 let stuffToLoad = [
   ShaderLoader.load("raycast.vert"),
   ShaderLoader.load("raycast.frag"),
-  TextureLoader.load("7.GIF")
+  TextureLoader.load("walls.png")
 ]
 
 Promise.all(stuffToLoad).then(function(){
@@ -30,7 +30,7 @@ let radius = 5;
 let width = height = 32;
 let world = [].concat.apply([],levelData.map(function(row,y){
   return row.map(function(f, x){
-    return {x: x, y: y, filled: f}
+    return {x: x, y: y, filled: (f > 0), block: f - 1}
   });
 }));
 
@@ -49,7 +49,7 @@ world.forEach(function(tile){
   worldData[i]     = tile.x;
   worldData[i + 1] = tile.y;
   worldData[i + 2] = tile.filled;
-  worldData[i + 3] = 0;
+  worldData[i + 3] = tile.block;
   i += 4;
 });
 
@@ -69,7 +69,7 @@ world.forEach(function(tile){
   Raycaster.worldDataTexture = texture;
 }
 
-let position = [3, 3];
+let position = [2.5, 2.5];
 let angle = 0;
 let speed = 2;
 let rotationalSpeed = 1;
@@ -82,6 +82,7 @@ function render(){
     angle -= rotationalSpeed * Math.PI * 2 * dt;
   }
   let lookVector = [Math.cos(angle), Math.sin(angle)];
+  let oldPosition = [position[0], position[1]];
 
   if (KeyInput[87]){
     position[0] += lookVector[0] * speed * dt;
@@ -101,6 +102,13 @@ function render(){
   if (KeyInput[68]){
     position[0] += lookVector[1] * speed * dt;
     position[1] -= lookVector[0] * speed * dt;
+  }
+
+  let currentTile = world.find(function(tile){ return tile.x == Math.floor(position[0]) && tile.y == Math.floor(position[1]) } );
+
+  if (currentTile.filled){
+    console.log(position, oldPosition);
+    position = oldPosition;
   }
 
   Renderer.clear();

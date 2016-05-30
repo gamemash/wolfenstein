@@ -9,7 +9,7 @@ module.exports = {
     this.program = ShaderHelper.initShaders("raycast");
     gl.useProgram(this.program);
     gl.uniform2fv(gl.getUniformLocation(this.program, "screenSize"), [gl.drawingBufferWidth, gl.drawingBufferHeight]);
-    this.texture = TextureLoader.get("7.GIF");
+    this.texture = TextureLoader.get("walls.png");
     this.vertexPositionAttribute = gl.getAttribLocation(this.program, "vertexPosition");
   },
   render: function(position, lookVector){

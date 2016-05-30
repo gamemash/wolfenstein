@@ -24,9 +24,12 @@ void main(){
       gl_FragColor = vec4(0.0, 0.0, 0.0, 1);
     }
     
-    if ( position.y > 1.0 || position.y < 0.0){
+    if ( position.y > 1.0) {
+      gl_FragColor = vec4(0.15, 0.15, 0.15, 1);
+      return; //ceiling
+    } else if (position.y < 0.0){
       gl_FragColor = vec4(0.3, 0.3, 0.3, 1);
-      return; //ceiling or floor
+      return; // floor
     }
 
     ivec3 tilePosition = ivec3(position);
@@ -35,8 +38,13 @@ void main(){
     if (tileData.z > 0.9/256.0){
       vec3 relativeToWallCoordinate = position.xyz - floor(position.xyz);
       relativeToWallCoordinate.y = 1.0 - relativeToWallCoordinate.y;
+      relativeToWallCoordinate.x = abs((relativeToWallCoordinate.x + relativeToWallCoordinate.z) - 1.0);
       //gl_FragColor = vec4(relativeToWallCoordinate.xy, 0, 1);
-      gl_FragColor = texture2D(testTexture, relativeToWallCoordinate.xy);
+      vec2 tileCoordinate = floor(vec2(mod(tileData.w * 256.0, 6.0), tileData.w * 256.0 / 6.0));
+      vec2 textureCoords = (abs(relativeToWallCoordinate.xy) + tileCoordinate) / vec2(6,19);
+      gl_FragColor = texture2D(testTexture, textureCoords);
+      //gl_FragColor = texture2D(testTexture, (relativeToWallCoordinate.xy + vec2(2, 1)) / vec2(6, 19));
+      //gl_FragColor = vec4((tileCoordinate.xy * 256.0 / vec2(6, 19)).yy, 0, 1);
       return;
     }
     float addedDistance = 0.0;
