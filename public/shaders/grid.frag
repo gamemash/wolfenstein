@@ -1,11 +1,12 @@
 precision mediump float;
-uniform int gridSize;
 
-varying vec2 absoluteCoordinate;
+uniform int gridSize;
+uniform vec2 screenSize;
 uniform vec2 cameraPosition;
 
+varying vec2 absoluteCoordinate;
+
 void main(){
-  vec2 screenSize = vec2(512, 384);
   float borderThinkness = 2.0;
   if (gl_FragColor.w > 0.0) {
     discard;

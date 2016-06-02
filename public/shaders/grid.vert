@@ -1,6 +1,6 @@
 attribute vec2 vertexPosition;
-uniform vec2 screenSize;
 
+uniform mediump vec2 screenSize;
 varying mediump vec2 absoluteCoordinate;
 
 void main(){

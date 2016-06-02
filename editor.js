@@ -9,7 +9,7 @@ let MouseInput = require('./src/mouse_input.js');
 
 let canvas = document.getElementById('game-canvas');
 MouseInput.registerOnCanvas(canvas);
-let aspects = [512, 384];
+let aspects = [768, 512];
 Renderer.setup(canvas, aspects);
 
 let stuffToLoad = [
