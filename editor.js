@@ -66,13 +66,22 @@ function render(){
   if (MouseInput.mouseDown){
     let mouseDownPosition = [
       Math.floor(MouseInput.mouseDown.offsetX / scale + cameraPosition[0]),
-      Math.floor((aspects[1] - MouseInput.mouseDown.offsetY) / scale)];
+      Math.floor((aspects[1] - MouseInput.mouseDown.offsetY) / scale + cameraPosition[1])];
     let currentPosition = [
       Math.floor(MouseInput.mouseMove.offsetX / scale + cameraPosition[0]),
-      Math.floor((aspects[1] - MouseInput.mouseMove.offsetY) / scale)];
+      Math.floor((aspects[1] - MouseInput.mouseMove.offsetY) / scale + cameraPosition[1])];
 
-    console.log(currentPosition);
+    //console.log(currentPosition);
     //console.log(currentPosition[0] - mouseDownPosition[0], currentPosition[1] - mouseDownPosition[1]);
+  }
+
+  if (MouseInput.mouseUp){
+    let currentPosition = [
+      Math.floor(MouseInput.mouseUp.offsetX / scale + cameraPosition[0]),
+      Math.floor((aspects[1] - MouseInput.mouseUp.offsetY) / scale + cameraPosition[1])];
+    console.log(currentPosition);
+    world[currentPosition[0] + currentPosition[1] * 32].filled = true;
+    world[currentPosition[0] + currentPosition[1] * 32].block = 20;
   }
 
   Grid.render(64, cameraPosition);
@@ -81,5 +90,6 @@ function render(){
       Tile.render([tile.x, tile.y], tile.block, cameraPosition);
     }
   });
+  MouseInput.mouseUp = null;
   requestAnimationFrame(render);
 }
