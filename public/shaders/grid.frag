@@ -11,17 +11,17 @@ void main(){
   if (gl_FragColor.w > 0.0) {
     discard;
   } else {
-    vec2 gridCoordinate = floor(absoluteCoordinate / vec2(gridSize) + cameraPosition * screenSize / float(gridSize));
+    vec2 gridCoordinate = floor(absoluteCoordinate / vec2(gridSize) + cameraPosition);
     if (gridCoordinate.x < 0.0 || gridCoordinate.y < 0.0){
       gl_FragColor = vec4(0.3, 0.3, 0.3, 1);
       return;
     }
-    if (abs(gridCoordinate.x * float(gridSize) - cameraPosition.x * screenSize.x - absoluteCoordinate.x) < borderThinkness){
+    if (abs((gridCoordinate.x - cameraPosition.x) * float(gridSize) - absoluteCoordinate.x) < borderThinkness){
       gl_FragColor = vec4(0.5);
       return;
     }
 
-    if (abs(gridCoordinate.y * float(gridSize) - cameraPosition.y * screenSize.y - absoluteCoordinate.y) < borderThinkness){
+    if (abs((gridCoordinate.y - cameraPosition.y) * float(gridSize) - absoluteCoordinate.y) < borderThinkness){
       gl_FragColor = vec4(0.5);
       return;
     }

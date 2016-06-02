@@ -29,7 +29,7 @@ Promise.all(stuffToLoad).then(function(){
 });
 
 function handleInputForCamera(cameraPosition, dt){
-  let speed = 1.0;
+  let speed = 16.0;
   if (KeyInput[87]){
     cameraPosition[1] += speed * dt;
   }
@@ -58,10 +58,22 @@ let world = [].concat.apply([],levelData.map(function(row,y){
 
 let cameraPosition = [0, 0];
 
+let scale = 32;
 let dt = 1/60;
 function render(){
   Renderer.clear();
   cameraPosition = handleInputForCamera(cameraPosition, dt);
+  if (MouseInput.mouseDown){
+    let mouseDownPosition = [
+      Math.floor(MouseInput.mouseDown.offsetX / scale + cameraPosition[0]),
+      Math.floor((aspects[1] - MouseInput.mouseDown.offsetY) / scale)];
+    let currentPosition = [
+      Math.floor(MouseInput.mouseMove.offsetX / scale + cameraPosition[0]),
+      Math.floor((aspects[1] - MouseInput.mouseMove.offsetY) / scale)];
+
+    console.log(currentPosition);
+    //console.log(currentPosition[0] - mouseDownPosition[0], currentPosition[1] - mouseDownPosition[1]);
+  }
 
   Grid.render(64, cameraPosition);
   world.forEach(function(tile){
