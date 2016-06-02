@@ -11,6 +11,10 @@ void main(){
     discard;
   } else {
     vec2 gridCoordinate = floor(absoluteCoordinate / vec2(gridSize) + cameraPosition * screenSize / float(gridSize));
+    if (gridCoordinate.x < 0.0 || gridCoordinate.y < 0.0){
+      gl_FragColor = vec4(0.3, 0.3, 0.3, 1);
+      return;
+    }
     if (abs(gridCoordinate.x * float(gridSize) - cameraPosition.x * screenSize.x - absoluteCoordinate.x) < borderThinkness){
       gl_FragColor = vec4(0.5);
       return;

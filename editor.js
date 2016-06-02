@@ -5,8 +5,10 @@ let Tile = require('./src/tile.js');
 let Grid = require('./src/grid.js');
 let levelData = require('./src/level_data');
 let KeyInput = require('./src/key_input.js');
+let MouseInput = require('./src/mouse_input.js');
 
 let canvas = document.getElementById('game-canvas');
+MouseInput.registerOnCanvas(canvas);
 let aspects = [512, 384];
 Renderer.setup(canvas, aspects);
 
