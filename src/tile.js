@@ -12,13 +12,15 @@ module.exports = {
     this.texture = TextureLoader.get("walls.png");
     this.vertexPositionAttribute = gl.getAttribLocation(this.program, "vertexPosition");
   },
-  render: function(position){
+  render: function(position, textureID, cameraPosition){
     let gl = Renderer.gl;
     gl.useProgram(this.program);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers);
     gl.vertexAttribPointer(this.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
 
+    gl.uniform2fv(gl.getUniformLocation(this.program, "cameraPosition"), cameraPosition);
     gl.uniform2fv(gl.getUniformLocation(this.program, "position"), position);
+    gl.uniform1f(gl.getUniformLocation(this.program, "textureID"), textureID);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
