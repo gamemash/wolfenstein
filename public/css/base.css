@@ -21,3 +21,13 @@
   background-size: 192px;
   
 }
+
+.tileList {
+  position: absolute;
+  display: none;
+
+}
+
+.activeTile {
+  margin: 0px 5px;
+}

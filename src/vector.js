@@ -19,8 +19,17 @@ Object.assign(Vector.prototype, {
   addScalar: function(scalar){
     return new Vector(this.x + scalar, this.y + scalar);
   },
+  divide: function(a){
+    return new Vector(this.x / a.x, this.y / a.y);
+  },
+  divideScalar: function(scalar){
+    return new Vector(this.x / scalar, this.y / scalar);
+  },
   multiply: function(a){
     return new Vector(this.x * a.x, this.y * a.y);
+  },
+  multiplyScalar: function(scalar){
+    return new Vector(this.x * scalar, this.y * scalar);
   },
   toArray: function(){
     return [this.x, this.y];
