@@ -1,7 +1,17 @@
 #toolbar{
   height: 32px;
 }
-.tool { 
+.tool {
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  float: left;
+  background-attachment: local;
+}
+.tool.active {
+  background-position: 1px 1px;
+}
+.tile { 
   width: 32px;
   height: 32px;
   float: left;

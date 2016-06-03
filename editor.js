@@ -77,33 +77,12 @@ function render(){
     let pos = Vec2.min(startingPosition, currentPosition);
     let size = startingPosition.subtract(currentPosition).abs().addScalar(1);
     selector = {position: pos, size: size};
-
   }
 
   if (MouseInput.clickAction){
     selector = null;
-
-    let {up, down} = MouseInput.clickAction;
-    let startingPosition = Selector.eventToTileCoord(down, cameraPosition, scale);
-    let endPosition = Selector.eventToTileCoord(up, cameraPosition, scale);
-
-    let pos = Vec2.min(startingPosition, endPosition);
-    let size = startingPosition.subtract(endPosition).abs().addScalar(1);
-    console.log(pos, size);
-    for (let y = pos.y; y < pos.y + size.y; y += 1){
-      for (let x = pos.x; x < pos.x + size.x; x += 1){
-        if ((x - pos.x) % (size.x - 1) == 0 ||
-          (y - pos.y) % (size.y - 1) == 0){
-          world[x + y * 32].filled = true;
-          world[x + y * 32].block = Toolbar.activeTool;
-        }
-      }
-    }
-    
-    //world[currentPosition[0] + currentPosition[1] * 32].filled = true;
-    //world[currentPosition[0] + currentPosition[1] * 32].block = Toolbar.activeTool;
+    world = Toolbar.activeTool.use(world, MouseInput.clickAction, cameraPosition, scale);
   }
-
 
   Grid.render(64, cameraPosition);
   world.forEach(function(tile){
