@@ -7,11 +7,11 @@ let Selector = require('./src/selector.js');
 let levelData = require('./src/level_data');
 let KeyInput = require('./src/key_input.js');
 let MouseInput = require('./src/mouse_input.js');
+let Vec2 = require('./src/vector.js');
 
 let canvas = document.getElementById('game-canvas');
 MouseInput.registerOnCanvas(canvas);
-let aspects = [768, 512];
-Renderer.setup(canvas, aspects);
+Renderer.setup(canvas);
 
 let stuffToLoad = [
   ShaderLoader.load("grid.vert"),
@@ -69,41 +69,31 @@ function render(){
   Renderer.clear();
   cameraPosition = handleInputForCamera(cameraPosition, dt);
   if (MouseInput.mouseDown){
-    let startingPosition = [
-      Math.floor(MouseInput.mouseDown.offsetX / scale + cameraPosition[0]),
-      Math.floor((aspects[1] - MouseInput.mouseDown.offsetY) / scale + cameraPosition[1])];
-    let currentPosition = [
-      Math.floor(MouseInput.mouseMove.offsetX / scale + cameraPosition[0]),
-      Math.floor((aspects[1] - MouseInput.mouseMove.offsetY) / scale + cameraPosition[1])];
+    let startingPosition = Selector.eventToTileCoord(MouseInput.mouseDown, cameraPosition, scale);
+    let currentPosition = Selector.eventToTileCoord(MouseInput.mouseMove, cameraPosition, scale);
 
-    let pos = [
-      Math.min(startingPosition[0], currentPosition[0]),
-      Math.min(startingPosition[1], currentPosition[1])];
-    let size = [
-      Math.abs(startingPosition[0] - currentPosition[0]) + 1,
-      Math.abs(startingPosition[1] - currentPosition[1]) + 1];
-      
+    let pos = Vec2.min(startingPosition, currentPosition);
+    let size = startingPosition.subtract(currentPosition).abs().addScalar(1);
     selector = {position: pos, size: size};
 
-    //console.log(currentPosition);
-    //console.log(currentPosition[0] - mouseDownPosition[0], currentPosition[1] - mouseDownPosition[1]);
   }
 
   if (MouseInput.clickAction){
-    let {up, down} = MouseInput.clickAction;
-    let startingPosition = [
-      Math.floor(down.offsetX / scale + cameraPosition[0]),
-      Math.floor((aspects[1] - down.offsetY) / scale + cameraPosition[1])];
-    let endPosition = [
-      Math.floor(up.offsetX / scale + cameraPosition[0]),
-      Math.floor((aspects[1] - up.offsetY) / scale + cameraPosition[1])];
-    let pos = [
-      Math.min(startingPosition[0], endPosition[0]),
-      Math.min(startingPosition[1], endPosition[1])];
-    let size = [
-      Math.abs(startingPosition[0] - endPosition[0]) + 1,
-      Math.abs(startingPosition[1] - endPosition[1]) + 1];
     selector = null;
+
+    let {up, down} = MouseInput.clickAction;
+    let startingPosition = Selector.eventToTileCoord(down, cameraPosition, scale);
+    let endPosition = Selector.eventToTileCoord(up, cameraPosition, scale);
+
+    let pos = Vec2.min(startingPosition, endPosition);
+    let size = startingPosition.subtract(endPosition).abs().addScalar(1);
+    console.log(pos, size);
+    for (let y = pos.y; y < pos.y + size.y; y += 1){
+      for (let x = pos.x; x < pos.x + size.x; x += 1){
+        world[x + y * 32].filled = true;
+        world[x + y * 32].block = 20;
+      }
+    }
     
     //world[currentPosition[0] + currentPosition[1] * 32].filled = true;
     //world[currentPosition[0] + currentPosition[1] * 32].block = 20;
@@ -117,7 +107,7 @@ function render(){
     }
   });
   if (selector){
-    Selector.render(selector.position, selector.size, cameraPosition);
+    Selector.render(selector.position.toArray(), selector.size.toArray(), cameraPosition);
   }
   MouseInput.clickAction = null;
   requestAnimationFrame(render);

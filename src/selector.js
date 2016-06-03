@@ -1,6 +1,8 @@
 let ShaderHelper = require('./shader_helper.js');
 let Renderer = require('./renderer.js');
 let TextureLoader = require('./texture_loader.js');
+let Properties = require("./game_properties.js");
+let Vec2 = require('./vector.js');
 
 module.exports = {
   setup: function(){
@@ -21,7 +23,13 @@ module.exports = {
     gl.uniform2fv(gl.getUniformLocation(this.program, "position"), position);
     gl.uniform2fv(gl.getUniformLocation(this.program, "size"), size);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-  } 
+  },
+  eventToTileCoord: function(event, cameraPosition, scale){
+    return new Vec2(
+        event.offsetX / scale + cameraPosition[0],
+        (Properties.aspects[1] - event.offsetY) / scale + cameraPosition[1]
+      ).floor();
+  }
 };
 
 

@@ -1,7 +1,9 @@
+let Properties = require("./game_properties.js");
+
 module.exports = {
-  setup: function(canvas, aspects){
-    let width = aspects[0];
-    let height = aspects[1];
+  setup: function(canvas){
+    let width = Properties.aspects[0];
+    let height = Properties.aspects[1];
     let gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 
     gl.clearColor(0.1, 0.1, 0.1, 1);
