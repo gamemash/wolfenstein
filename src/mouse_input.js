@@ -2,14 +2,14 @@
 
 let MouseInput = {
   mouseDown: null,
-  mouseUp: null,
+  clickAction: null,
   mouseMove: null,
   handleMouseDown: function(event){
     MouseInput.mouseDown = event;
     MouseInput.mouseMove = event;
   },
   handleMouseUp: function(event){
-    MouseInput.mouseUp = event;
+    MouseInput.clickAction = {down: MouseInput.mouseDown, up: event};
     MouseInput.mouseDown = null;
   },
   handleMouseMove: function(event){
