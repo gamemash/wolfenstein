@@ -1,0 +1,13 @@
+#toolbar{
+  height: 32px;
+}
+.tool { 
+  width: 32px;
+  height: 32px;
+  float: left;
+  background-image: url('/images/walls.png');
+  background-repeat: no-repeat;
+  background-attachment: local;
+  background-size: 192px;
+  
+}

@@ -7,6 +7,7 @@ let Selector = require('./src/selector.js');
 let levelData = require('./src/level_data');
 let KeyInput = require('./src/key_input.js');
 let MouseInput = require('./src/mouse_input.js');
+let Toolbar = require('./src/toolbar.js');
 let Vec2 = require('./src/vector.js');
 
 let canvas = document.getElementById('game-canvas');
@@ -28,6 +29,7 @@ Promise.all(stuffToLoad).then(function(){
   Tile.setup();
   Grid.setup();
   Selector.setup();
+  Toolbar.setup("walls.png", new Vec2(6, 19));
   console.log("Done; rendering..");
   render();
 });
@@ -90,13 +92,16 @@ function render(){
     console.log(pos, size);
     for (let y = pos.y; y < pos.y + size.y; y += 1){
       for (let x = pos.x; x < pos.x + size.x; x += 1){
-        world[x + y * 32].filled = true;
-        world[x + y * 32].block = 20;
+        if ((x - pos.x) % (size.x - 1) == 0 ||
+          (y - pos.y) % (size.y - 1) == 0){
+          world[x + y * 32].filled = true;
+          world[x + y * 32].block = Toolbar.activeTool;
+        }
       }
     }
     
     //world[currentPosition[0] + currentPosition[1] * 32].filled = true;
-    //world[currentPosition[0] + currentPosition[1] * 32].block = 20;
+    //world[currentPosition[0] + currentPosition[1] * 32].block = Toolbar.activeTool;
   }
 
 
