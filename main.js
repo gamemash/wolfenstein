@@ -5,6 +5,7 @@ let Raycaster = require('./src/raycaster.js');
 let KeyInput = require('./src/key_input.js');
 
 let levelData = require('./src/level_data.js');
+let Level = require('./src/level.js');
 
 let canvas = document.getElementById('game-canvas');
 let aspects = [512, 384];
@@ -19,6 +20,7 @@ let stuffToLoad = [
 Promise.all(stuffToLoad).then(function(){
   TextureLoader.buildTextures(Renderer.gl);
   Raycaster.setup();
+  ImportTool.setup(document.getElementById("toolbar"));
   render();
 });
 
@@ -27,46 +29,22 @@ let once = true;
 
 let radius = 5;
 
-let width = height = 32;
-let world = [].concat.apply([],levelData.map(function(row,y){
-  return row.map(function(f, x){
-    return {x: x, y: y, filled: (f > 0), block: f - 1}
-  });
-}));
+let level = Level.import(levelData);
+level.createTexture();
+Raycaster.worldDataTexture = level.texture;
 
-
-let rowStart = 16 * 32;
-for (let i = 0; i < 32; i += 1){
-  world[i + rowStart].filled = true;
-}
-//world[67].filled = true;
-//world[68].filled = true;
-//world[2].filled = true;
-
-let worldData = new Uint8Array(width * height * 4);
-let i = 0;
-world.forEach(function(tile){
-  worldData[i]     = tile.x;
-  worldData[i + 1] = tile.y;
-  worldData[i + 2] = tile.filled;
-  worldData[i + 3] = tile.block;
-  i += 4;
-});
-
-
-{
-  let gl = Renderer.gl;
-  let texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, worldData);
-  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST ) ;
-  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST ) ;
-  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT ) ;
-  gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT ) ;
-
-  gl.bindTexture(gl.TEXTURE_2D, null);
-
-  Raycaster.worldDataTexture = texture;
+let ImportTool = {
+  setup: function(container){
+    let button = this.button = document.createElement('button');
+    button.innerHTML = "Import";
+    button.onclick = function(){
+      let input = prompt("Level export", "");
+      let newLevel = Level.import(input);
+      level.data = newLevel.data;
+      level.updateTexture(newLevel.data);
+    }
+    container.appendChild(button);
+  }
 }
 
 let position = [2.5, 2.5];
@@ -104,7 +82,7 @@ function render(){
     position[1] -= lookVector[0] * speed * dt;
   }
 
-  let currentTile = world.find(function(tile){ return tile.x == Math.floor(position[0]) && tile.y == Math.floor(position[1]) } );
+  let currentTile = level.data.find(function(tile){ return tile.x == Math.floor(position[0]) && tile.y == Math.floor(position[1]) } );
 
   if (currentTile.filled){
     console.log(position, oldPosition);

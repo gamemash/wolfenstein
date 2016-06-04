@@ -50,6 +50,7 @@ let EraserTool = {
     for (let y = pos.y; y < pos.y + size.y; y += 1){
       for (let x = pos.x; x < pos.x + size.x; x += 1){
         world[x + y * 32].filled = false;
+        world[x + y * 32].block = -1;
       }
     }
     return world;

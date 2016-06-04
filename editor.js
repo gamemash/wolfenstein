@@ -9,6 +9,8 @@ let KeyInput = require('./src/key_input.js');
 let MouseInput = require('./src/mouse_input.js');
 let Toolbar = require('./src/toolbar.js');
 let Vec2 = require('./src/vector.js');
+let Level = require('./src/level.js');
+let exportToClipboard = require('./src/export_clipboard.js');
 
 let canvas = document.getElementById('game-canvas');
 MouseInput.registerOnCanvas(canvas);
@@ -29,6 +31,7 @@ Promise.all(stuffToLoad).then(function(){
   Tile.setup();
   Grid.setup();
   Selector.setup();
+  ExportTool.setup(document.getElementById("toolbar"));
   Toolbar.setup("walls.png", new Vec2(6, 19));
   console.log("Done; rendering..");
   render();
@@ -55,12 +58,21 @@ function handleInputForCamera(cameraPosition, dt){
   return cameraPosition;
 }
 
+let level = Level.import(levelData);
+level.createTexture();
+let world = level.data;
 
-let world = [].concat.apply([],levelData.map(function(row,y){
-  return row.map(function(f, x){
-    return {x: x, y: y, filled: (f > 0), block: f - 1}
-  });
-}));
+let ExportTool = {
+  setup: function(container){
+    let button = this.button = document.createElement('button');
+    button.innerHTML = "Export";
+    button.onclick = function(){
+      //Level.import(Level.export(32, world));
+      exportToClipboard(Level.export(32, world));
+    }
+    container.appendChild(button);
+  }
+}
 
 let cameraPosition = [0, 0];
 let selector;
@@ -83,6 +95,7 @@ function render(){
     selector = null;
     world = Toolbar.activeTool.use(world, MouseInput.clickAction, cameraPosition, scale);
   }
+
 
   Grid.render(64, cameraPosition);
   world.forEach(function(tile){
